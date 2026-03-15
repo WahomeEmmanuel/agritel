@@ -6,6 +6,7 @@ import { MapPin, Search, Loader2, Wheat, Send } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import AdviceCard from "@/components/AdviceCard";
 import ChatHistory from "@/components/ChatHistory";
+import LoaderSkeleton from "@/components/LoaderSkeleton";
 import { FarmingAdvice } from "@/types/advice";
 import { Message } from "@/types/message";
 
@@ -238,6 +239,7 @@ export default function Home() {
             </div>
           ))}
 
+          {loading && <div className="w-full"><LoaderSkeleton /></div>}
           <div ref={scrollRef} />
         </div>
       </main>
