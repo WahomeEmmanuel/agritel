@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { MapPin, Search, Loader2, Wheat } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { MapPin, Search, Loader2, Wheat, Send } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
 import AdviceCard from "@/components/AdviceCard";
@@ -24,6 +24,7 @@ const MOCK_ADVICE: FarmingAdvice = {
   warning: "High rainfall expected in the next 14 days. Ensure proper drainage.",
   pro_tip: "Intercrop with beans to improve soil nitrogen levels naturally."
 };
+const MOCK_FOLLOW_UP_RESPONSE = "Yes, you can intercrop maize with beans. Plant the beans in between the rows of maize to maximize space and improve soil fertility. Beans will fix nitrogen in the soil, benefiting the maize crop. Just ensure to choose a bean variety that matures around the same time as your maize for best results.";
 
 export default function Home() {
   const [domain, setDomain] = useState<"farming" | "forestry">("farming");
@@ -31,6 +32,13 @@ export default function Home() {
   const [formData, setFormData] = useState({ county: "", crop: "" });
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [followUpMessage, setFollowUpMessage] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
   const handleFirstMessageSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +72,27 @@ export default function Home() {
       setMessages(prev => [...prev, { role: "model", type: "advice", content: MOCK_ADVICE }]);
       setLoading(false);
     }, 2000);
+  };
+
+  const handleFollowUpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!followUpMessage.trim()) return;
+    setLoading(true);
+
+    const userRequest: Message = {
+      role: "user",
+      type: "text",
+      content: followUpMessage
+    };
+
+    setMessages(prev => [...prev, userRequest]);
+    setFollowUpMessage("");
+
+    // Simulate API response for follow-up
+    setTimeout(() => {
+      setMessages(prev => [...prev, { role: "model", type: "text", content: MOCK_FOLLOW_UP_RESPONSE }]);
+      setLoading(false);
+    }, 1500);
   };
 
   const startNewChat = () => {
@@ -158,8 +187,29 @@ export default function Home() {
               )}
             </div>
           ))}
+
+          <div ref={scrollRef} />
         </div>
       </main>
+
+      {/* Follow up input - sticky at the bottom */}
+      {messages.length > 0 && (
+        <div className="sticky bottom-0 p-6 bg-gradient-to-t from-[#F8FAF9] via-[#F8FAF9] pt-10">
+          <div className="max-w-3xl mx-auto">
+            <form onSubmit={handleFollowUpSubmit} className="flex gap-2 bg-white p-2 rounded-[2rem] shadow-2xl border border-emerald-100 focus-within:ring-4 focus-within:ring-emerald-600/10">
+              <input 
+                value={followUpMessage} 
+                onChange={(e) => setFollowUpMessage(e.target.value)}
+                placeholder="Ask a follow-up question..." 
+                className="flex-1 px-6 outline-none font-medium bg-transparent"
+              />
+              <button disabled={loading} className="bg-emerald-600 p-4 rounded-full text-white hover:bg-emerald-900 transition-all shadow-lg active:scale-90">
+                <Send size={20} />
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
