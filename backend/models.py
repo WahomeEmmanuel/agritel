@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Union, Dict, Any
+from typing import Optional, List, Union, Dict, Any
 
 class Response(BaseModel):
     summary: str
