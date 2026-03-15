@@ -12,7 +12,7 @@ import { Message } from "@/types/message";
 
 const MOCK_ADVICE: Response = {
   summary: "The rainy season is approaching, making it an ideal time to plant maize in your county. Here's a tailored guide to help you get started:",
-  steps: [
+  points: [
     "Prepare your land by plowing and harrowing to create a fine seedbed.",
     "Rains are expected to start in the next 2 weeks before March 20th, so aim to plant your maize seeds just before the onset of the rains for optimal germination.",
     "Use certified maize seeds that are resistant to local pests and diseases. Consider varieties like H614 or DK8031 which perform well in your region.",
@@ -28,7 +28,7 @@ const MOCK_ADVICE: Response = {
 };
 const MOCK_FOLLOW_UP_RESPONSE: Response = {
   summary: "Intercropping maize with beans is a highly effective strategy for your region. It maximizes land use and naturally boosts soil health through nitrogen fixation.",
-  steps: [
+  points: [
     "Select a bush bean variety that doesn't climb, to avoid tangling with the maize stalks.",
     "Plant one row of beans between every two rows of maize (1:2 ratio) for optimal light penetration.",
     "Ensure both crops are planted at the same time so they don't compete for the initial moisture from the March rains.",
