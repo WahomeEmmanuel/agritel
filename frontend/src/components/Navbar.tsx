@@ -2,7 +2,11 @@
 
 import { Sprout, History, Plus } from "lucide-react";
 
-export default function Navbar() {
+interface NavbarProps {
+  onNewChat: () => void;
+}
+
+export default function Navbar({ onNewChat }: NavbarProps) {
     return (
         <nav className="p-4 md:p-6 border-b border-emerald-100 bg-white/70 backdrop-blur-xl sticky top-0 z-50">
             <div className="max-w-5xl mx-auto flex justify-between items-center">
@@ -29,6 +33,7 @@ export default function Navbar() {
 
                 <div className="flex items-center gap-2 md:gap-3">
                     <button 
+                        onClick={onNewChat}
                         className="flex items-center gap-2 px-4 py-2.5 rounded-2xl border-2 border-emerald-100 text-emerald-700 font-bold text-xs hover:bg-emerald-50 hover:border-emerald-200 transition-all active:scale-95"
                     >
                         <Plus size={18} className="text-emerald-600" />
