@@ -11,7 +11,7 @@ import { FarmingAdvice } from "@/types/advice";
 import { Message } from "@/types/message";
 
 const MOCK_ADVICE: FarmingAdvice = {
-  advice: "The rainy season is approaching, making it an ideal time to plant maize in your county. Here's a tailored guide to help you get started:",
+  summary: "The rainy season is approaching, making it an ideal time to plant maize in your county. Here's a tailored guide to help you get started:",
   steps: [
     "Prepare your land by plowing and harrowing to create a fine seedbed.",
     "Rains are expected to start in the next 2 weeks before March 20th, so aim to plant your maize seeds just before the onset of the rains for optimal germination.",

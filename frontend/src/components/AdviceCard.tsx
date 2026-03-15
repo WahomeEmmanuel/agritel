@@ -16,7 +16,7 @@ export default function AdviceCard({ advice }: { advice: FarmingAdvice }) {
 
         {/* General Advice */}
         <p className="text-emerald-800 font-medium mb-6 leading-relaxed">
-            {advice.advice}
+            {advice.summary}
         </p>
 
         {/* Farming Steps */}
