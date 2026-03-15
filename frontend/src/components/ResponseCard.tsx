@@ -21,7 +21,7 @@ export default function ResponseCard({ resp }: { resp: Response }) {
 
         {/* Farming Steps/Points */}
         <div className="space-y-4 mb-8">
-            {resp.points.map((point, idx) => (
+            {resp.points?.map((point, idx) => (
             <div key={idx} className="flex gap-4">
                 <span className="flex-none w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
                 {idx + 1}
