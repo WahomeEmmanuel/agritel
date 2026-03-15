@@ -1,4 +1,4 @@
-export interface FarmingAdvice {
+export interface Response {
   summary: string;
   steps: string[];
   cost_estimate_per_acre_kes: number;

@@ -4,13 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import { MapPin, Search, Loader2, Wheat, Send } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
-import AdviceCard from "@/components/AdviceCard";
+import ResponseCard from "@/components/ResponseCard";
 import ChatHistory from "@/components/ChatHistory";
 import LoaderSkeleton from "@/components/LoaderSkeleton";
-import { FarmingAdvice } from "@/types/advice";
+import { Response } from "@/types/response";
 import { Message } from "@/types/message";
 
-const MOCK_ADVICE: FarmingAdvice = {
+const MOCK_ADVICE: Response = {
   summary: "The rainy season is approaching, making it an ideal time to plant maize in your county. Here's a tailored guide to help you get started:",
   steps: [
     "Prepare your land by plowing and harrowing to create a fine seedbed.",
@@ -26,7 +26,18 @@ const MOCK_ADVICE: FarmingAdvice = {
   warning: "High rainfall expected in the next 14 days. Ensure proper drainage.",
   pro_tip: "Intercrop with beans to improve soil nitrogen levels naturally."
 };
-const MOCK_FOLLOW_UP_RESPONSE = "Yes, you can intercrop maize with beans. Plant the beans in between the rows of maize to maximize space and improve soil fertility. Beans will fix nitrogen in the soil, benefiting the maize crop. Just ensure to choose a bean variety that matures around the same time as your maize for best results.";
+const MOCK_FOLLOW_UP_RESPONSE: Response = {
+  summary: "Intercropping maize with beans is a highly effective strategy for your region. It maximizes land use and naturally boosts soil health through nitrogen fixation.",
+  steps: [
+    "Select a bush bean variety that doesn't climb, to avoid tangling with the maize stalks.",
+    "Plant one row of beans between every two rows of maize (1:2 ratio) for optimal light penetration.",
+    "Ensure both crops are planted at the same time so they don't compete for the initial moisture from the March rains.",
+    "Apply slightly more phosphorus-based fertilizer to support the bean's root development."
+  ],
+  cost_estimate_per_acre_kes: 0, // Set to 0 to hide the cost card in the UI
+  warning: "Watch out for aphids which can jump from beans to maize; monitor both crops weekly.",
+  pro_tip: "Using a 1:2 ratio (one row of beans for every two rows of maize) provides the best balance for pest suppression and soil health."
+};
 
 export default function Home() {
   const [domain, setDomain] = useState<"farming" | "forestry">("farming");
@@ -72,7 +83,7 @@ export default function Home() {
     setTimeout(() => {
       setMessages(prev => [...prev, userRequest]);
 
-      setMessages(prev => [...prev, { role: "model", type: "advice", content: MOCK_ADVICE }]);
+      setMessages(prev => [...prev, { role: "model", type: "llm_response", content: MOCK_ADVICE }]);
       setLoading(false);
     }, 2000);
   };
@@ -93,7 +104,7 @@ export default function Home() {
 
     // Simulate API response for follow-up
     setTimeout(() => {
-      setMessages(prev => [...prev, { role: "model", type: "text", content: MOCK_FOLLOW_UP_RESPONSE }]);
+      setMessages(prev => [...prev, { role: "model", type: "llm_response", content: MOCK_FOLLOW_UP_RESPONSE }]);
       setLoading(false);
     }, 1500);
   };
@@ -135,7 +146,7 @@ export default function Home() {
         localStorage.setItem("agritel_history", JSON.stringify(updated));
       }
     }
-  }, [messages, formData.county, formData.crop]);
+  }, [messages]);
 
   const startNewChat = () => {
     setMessages([]);
@@ -227,8 +238,8 @@ export default function Home() {
           {/* Messages and advice will be rendered here */}
           {messages.map((message, index) => (
             <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-4`}>
-              {message.type === 'advice' ? (
-                <AdviceCard advice={message.content as FarmingAdvice} />
+              {message.type === 'llm_response' ? (
+                <ResponseCard resp={message.content as Response} />
               ) : (
               <div className={`max-w-[85%] p-6 rounded-[2rem] font-medium shadow-sm leading-relaxed ${
                   message.role === 'user' ? 'bg-emerald-900 text-white rounded-tr-none' : 'bg-white text-emerald-900 border border-emerald-100 rounded-tl-none'

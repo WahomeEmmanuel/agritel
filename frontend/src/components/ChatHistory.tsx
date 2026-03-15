@@ -85,7 +85,12 @@ export default function ChatHistoryDrawer({ isOpen, onClose, onSelectChat }: Cha
                                     </div>
                                     
                                     <p className="text-xs font-medium text-emerald-800/70 leading-relaxed truncate max-w-[180px]">
-                                        Last: "What about DAP fertilizer?"
+                                        {(() => {
+                                            const last = chat.messages[chat.messages.length - 1];
+                                            if (!last) return "No messages";
+                                            
+                                            return last.type === "llm_response" ? last.content.summary : last.content;
+                                        })()}
                                     </p>
 
                                     <div className="flex items-center gap-2 pt-1.5 text-[10px] text-emerald-500 font-bold uppercase">
@@ -105,7 +110,7 @@ export default function ChatHistoryDrawer({ isOpen, onClose, onSelectChat }: Cha
                             <MessageSquare size={36} strokeWidth={1.5} />
                         </div>
                         <p className="text-sm font-bold text-emerald-800/40 max-w-[200px] leading-relaxed">
-                            No saved consultations yet. Your farm history will appear here.
+                            No saved chats yet.
                         </p>
                     </div>
                     )}
