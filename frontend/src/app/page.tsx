@@ -5,6 +5,7 @@ import { MapPin, Search, Loader2, Wheat, Send } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
 import AdviceCard from "@/components/AdviceCard";
+import ChatHistory from "@/components/ChatHistory";
 import { FarmingAdvice } from "@/types/advice";
 import { Message } from "@/types/message";
 
@@ -33,6 +34,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [followUpMessage, setFollowUpMessage] = useState("");
+  const [chatHistoryOpen, setChatHistoryOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll
@@ -56,8 +58,8 @@ export default function Home() {
 
     // Initital user message to be sent to the model
     const messageContent = domain === "farming"
-      ? `I am looking for farming advice for growing ${formData.crop} in ${formData.county} county.`
-      : `I want to track the forest cover changes and environmental status in ${formData.county} county.`;
+      ? `I am looking for farming advice for growing ${formData.crop} in ${formData.county}.`
+      : `I want to track the forest cover changes and environmental status in ${formData.county}.`;
 
     const userRequest: Message = {
       role: "user",
@@ -95,16 +97,64 @@ export default function Home() {
     }, 1500);
   };
 
+  const loadHistoryChat = (chatId: string) => {
+    const history = JSON.parse(localStorage.getItem("agritel_history") || "[]");
+    const selected = history.find((h: any) => h.id === chatId);
+    if (selected) {
+      setMessages(selected.messages);
+      sessionStorage.setItem("current_chat_id", selected.id);
+      setChatHistoryOpen(false);
+    }
+  };
+
+  // Save chat history to localStorage whenever messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      const history = JSON.parse(localStorage.getItem("agritel_history") || "[]");
+      const currentId = sessionStorage.getItem("current_chat_id") || Date.now().toString();
+      
+      if (!sessionStorage.getItem("current_chat_id")) {
+        sessionStorage.setItem("current_chat_id", currentId);
+        const newEntry = {
+          id: currentId,
+          title: `${formData.county || 'New'} ${formData.crop || 'Farm'}`,
+          date: new Date().toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+          }),
+          messages: messages
+        };
+        localStorage.setItem("agritel_history", JSON.stringify([newEntry, ...history]));
+      } else {
+        const updated = history.map((h: any) => h.id === currentId ? { ...h, messages } : h);
+        localStorage.setItem("agritel_history", JSON.stringify(updated));
+      }
+    }
+  }, [messages, formData.county, formData.crop]);
+
   const startNewChat = () => {
     setMessages([]);
     setFormData({ county: "", crop: "" });
     setError(null);
+    setChatHistoryOpen(false);
+    sessionStorage.removeItem("current_chat_id");
   };
 
   return (
     <div className="min-h-screen bg-[#F8FAF9] text-emerald-950 flex flex-col">
       <Navbar 
+        onOpenChatHistory={() => setChatHistoryOpen(true)} 
         onNewChat={startNewChat} 
+      />
+
+      <ChatHistory 
+        isOpen={chatHistoryOpen} 
+        onClose={() => setChatHistoryOpen(false)} 
+        onSelectChat={loadHistoryChat}
       />
 
       <main className="max-w-4xl mx-auto px-4 py-12 flex-1 w-full flex flex-col">

@@ -3,10 +3,11 @@
 import { Sprout, History, Plus } from "lucide-react";
 
 interface NavbarProps {
-  onNewChat: () => void;
+    onOpenChatHistory: () => void;
+    onNewChat: () => void;
 }
 
-export default function Navbar({ onNewChat }: NavbarProps) {
+export default function Navbar({ onOpenChatHistory, onNewChat }: NavbarProps) {
     return (
         <nav className="p-4 md:p-6 border-b border-emerald-100 bg-white/70 backdrop-blur-xl sticky top-0 z-50">
             <div className="max-w-5xl mx-auto flex justify-between items-center">
@@ -41,6 +42,7 @@ export default function Navbar({ onNewChat }: NavbarProps) {
                     </button>
 
                     <button 
+                        onClick={onOpenChatHistory}
                         className="group flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-900 text-white hover:bg-emerald-800 transition-all active:scale-95 shadow-lg shadow-emerald-900/20"
                     >
                         <History size={18} className="text-lime-400 group-hover:rotate-[-20deg] transition-transform" />
