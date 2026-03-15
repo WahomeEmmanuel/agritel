@@ -1,5 +1,5 @@
 export interface FarmingAdvice {
-  diagnosis: string;
+  advice: string;
   steps: string[];
   cost_estimate_kes: number;
   warning: string;
