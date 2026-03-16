@@ -207,9 +207,9 @@ export default function Home() {
                   />
                 </div>
               )}
-              <button disabled={loading} className="bg-emerald-600 hover:bg-emerald-900 text-white font-bold py-4 px-10 rounded-[2rem] flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50">
+              <button disabled={loading || domain === "forestry"} className="bg-emerald-600 hover:bg-emerald-900 text-white font-bold py-4 px-10 rounded-[2rem] flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50">
                 {loading ? <Loader2 className="animate-spin" /> : <Search size={20} />}
-                {domain === "farming" ? "Get Advice" : "Track Forest Cover"}
+                {domain === "farming" ? "Get Advice" : "Track Forest Cover - Coming Soon"}
               </button>
             </form>
             {error && <p className="text-red-500 font-bold mt-2 animate-bounce">{error}</p>}
