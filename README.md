@@ -1,4 +1,4 @@
-# agritel
+# Agritel
 **Smart Agricultural Advisory & Precision Planning for Kenyan Farmers**
 
 An AI-powered agricultural advisor for Kenyan farmers. Built with FastAPI and Next.js, leveraging Claude/Gemini to provide real-time planting schedules, variety recommendations and cost estimates for the different Rain seasons.
@@ -34,9 +34,8 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-```bash
 Create a .env file in the backend folder:
-
+```bash
 GEMINI_API_KEY=your_api_key_here
 PORT=8000
 ```
