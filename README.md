@@ -37,6 +37,10 @@ Agritel.AI is a specialized AI platform designed to bridge the gap between compl
 
 ## Setup Instructions
 
+### You can setup using Docker or manual setup on the host machine
+
+## Manual Setup
+
 ### Prerequisites
 
 - Python 3.12+
