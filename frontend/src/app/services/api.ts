@@ -14,7 +14,7 @@ export const getFarmAdvice = async (data: ChatRequest): Promise<Response> => {
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
-    throw new Error(errorBody.detail || 'The agricultural advisor is currently busy.');
+    throw new Error(errorBody.detail || 'The agricultural advisor is unavailable.');
   }
 
   return response.json();
