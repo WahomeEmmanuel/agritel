@@ -115,7 +115,7 @@ export default function Home() {
         
         const newEntry = {
           id: currentId,
-          title: `${formData.county || 'Kigumo'} ${formData.crop || 'Maize'}`,
+          title: `${formData.county || 'Kigumo'} - ${formData.crop || 'Maize'}`,
           date: new Date().toLocaleString(),
           messages: messages
         };
