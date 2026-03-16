@@ -89,6 +89,36 @@ npm run dev
 
 ---
 
+## Docker Setup Instructions
+
+### The easiest way to run the entire stack is using Docker Compose:
+
+Create a `.env` file in the root folder of the project :
+
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+Run:
+   ```bash
+   docker compose up --build
+   ```
+
+---
+
+## Access System
+
+Frontend
+```bash
+http://localhost:3000
+```
+
+Backend
+```bash
+http://localhost:8000/docs
+```
+---
+
 ## Testing
 
 Run backend tests:
