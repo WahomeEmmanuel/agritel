@@ -2,7 +2,7 @@
 
 **Smart Agricultural Advisory & Precision Planning for Kenyan Farmers**
 
-Agritel.AI is a specialized AI platform designed to bridge the gap between complex climate data and actionable farm management. Focused specifically on the Kenyan landscape (e.g., Murang'a, Kigumo), it provides seasonal strategies, intercropping advice, and cost estimations.
+Agritel.AI is a specialized AI platform designed to bridge the gap between complex climate data and actionable farm management. Focused specifically on the Kenyan landscape, it provides seasonal strategies, intercropping advice, and cost estimations.
 
 ---
 
@@ -10,7 +10,7 @@ Agritel.AI is a specialized AI platform designed to bridge the gap between compl
 
 | Service | URL |
 |---|---|
-| Backend (Railway) | [Insert your Railway URL here] |
+| Backend (Railway) | https://agritel-production.up.railway.app/docs |
 | Frontend (Vercel) | https://agritel.emmanuelgathage.dev/ |
 
 ---
