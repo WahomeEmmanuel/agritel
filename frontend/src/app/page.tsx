@@ -11,35 +11,6 @@ import { Response } from "@/types/response";
 import { Message } from "@/types/message";
 import { getFarmAdvice } from './services/api';
 
-const MOCK_ADVICE: Response = {
-  summary: "The rainy season is approaching, making it an ideal time to plant maize in your county. Here's a tailored guide to help you get started:",
-  points: [
-    "Prepare your land by plowing and harrowing to create a fine seedbed.",
-    "Rains are expected to start in the next 2 weeks before March 20th, so aim to plant your maize seeds just before the onset of the rains for optimal germination.",
-    "Use certified maize seeds that are resistant to local pests and diseases. Consider varieties like H614 or DK8031 which perform well in your region.",
-    "Plant the seeds at a depth of 5-7 cm, spacing them about 25 cm apart in rows that are 75 cm apart to ensure good air circulation and sunlight penetration.",
-    "Apply a balanced fertilizer at planting time, such as DAP (Diammonium Phosphate), to provide essential nutrients for early growth.",
-    "As the maize grows, monitor for common pests like stem borers and aphids. Use integrated pest management practices, including natural predators and, if necessary, targeted insecticides.",
-    "Ensure proper weed control mostly after 3 weeks by manually weeding or using herbicides at the right growth stages to prevent competition for nutrients and water.",
-    "With the expected rainfall, ensure your field has good drainage to prevent waterlogging, which can harm maize roots."
-  ],
-  cost_estimate_per_acre_kes: 18500, 
-  warning: "High rainfall expected in the next 14 days. Ensure proper drainage.",
-  pro_tip: "Intercrop with beans to improve soil nitrogen levels naturally."
-};
-const MOCK_FOLLOW_UP_RESPONSE: Response = {
-  summary: "Intercropping maize with beans is a highly effective strategy for your region. It maximizes land use and naturally boosts soil health through nitrogen fixation.",
-  points: [
-    "Select a bush bean variety that doesn't climb, to avoid tangling with the maize stalks.",
-    "Plant one row of beans between every two rows of maize (1:2 ratio) for optimal light penetration.",
-    "Ensure both crops are planted at the same time so they don't compete for the initial moisture from the March rains.",
-    "Apply slightly more phosphorus-based fertilizer to support the bean's root development."
-  ],
-  cost_estimate_per_acre_kes: 0, // Set to 0 to hide the cost card in the UI
-  warning: "Watch out for aphids which can jump from beans to maize; monitor both crops weekly.",
-  pro_tip: "Using a 1:2 ratio (one row of beans for every two rows of maize) provides the best balance for pest suppression and soil health."
-};
-
 export default function Home() {
   const [domain, setDomain] = useState<"farming" | "forestry">("farming");
   const [loading, setLoading] = useState(false);
@@ -119,8 +90,13 @@ export default function Home() {
   const loadHistoryChat = (chatId: string) => {
     const history = JSON.parse(localStorage.getItem("agritel_history") || "[]");
     const selected = history.find((h: any) => h.id === chatId);
+    
     if (selected) {
       setMessages(selected.messages);
+      // CRITICAL: Restore the context for follow-up questions
+      const [titleCounty, titleCrop] = selected.title.split(' ');
+      setFormData({ county: titleCounty, crop: titleCrop });
+      
       sessionStorage.setItem("current_chat_id", selected.id);
       setChatHistoryOpen(false);
     }
@@ -130,27 +106,26 @@ export default function Home() {
   useEffect(() => {
     if (messages.length > 0) {
       const history = JSON.parse(localStorage.getItem("agritel_history") || "[]");
-      const currentId = sessionStorage.getItem("current_chat_id") || Date.now().toString();
-      
-      if (!sessionStorage.getItem("current_chat_id")) {
+      let currentId = sessionStorage.getItem("current_chat_id");
+
+      if (!currentId) {
+        // NEW CHAT: Create ID and initial entry
+        currentId = Date.now().toString();
         sessionStorage.setItem("current_chat_id", currentId);
+        
         const newEntry = {
           id: currentId,
-          title: `${formData.county || 'New'} ${formData.crop || 'Farm'}`,
-          date: new Date().toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-          }),
+          title: `${formData.county || 'Kigumo'} ${formData.crop || 'Maize'}`,
+          date: new Date().toLocaleString(),
           messages: messages
         };
         localStorage.setItem("agritel_history", JSON.stringify([newEntry, ...history]));
       } else {
-        const updated = history.map((h: any) => h.id === currentId ? { ...h, messages } : h);
-        localStorage.setItem("agritel_history", JSON.stringify(updated));
+        // UPDATE EXISTING CHAT: Find the chat in history and update messages
+        const updatedHistory = history.map((h: any) => 
+          h.id === currentId ? { ...h, messages } : h
+        );
+        localStorage.setItem("agritel_history", JSON.stringify(updatedHistory));
       }
     }
   }, [messages]);

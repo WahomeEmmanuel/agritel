@@ -4,9 +4,9 @@ from typing import Optional, List, Union, Dict, Any
 class Response(BaseModel):
     summary: str
     points: Optional[List[str]] = []
-    cost_estimate_per_acre_kes: int
-    warning: str
-    pro_tip: str
+    cost_estimate_per_acre_kes: Optional[int] = None
+    warning: Optional[str] = None
+    pro_tip: Optional[str] = None
 
 class ChatMessage(BaseModel):
     role: str  # "user" or "model"
