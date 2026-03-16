@@ -9,6 +9,7 @@ import ChatHistory from "@/components/ChatHistory";
 import LoaderSkeleton from "@/components/LoaderSkeleton";
 import { Response } from "@/types/response";
 import { Message } from "@/types/message";
+import { getFarmAdvice } from './services/api';
 
 const MOCK_ADVICE: Response = {
   summary: "The rainy season is approaching, making it an ideal time to plant maize in your county. Here's a tailored guide to help you get started:",
@@ -73,19 +74,23 @@ export default function Home() {
       ? `I am looking for farming advice for growing ${formData.crop} in ${formData.county}.`
       : `I want to track the forest cover changes and environmental status in ${formData.county}.`;
 
-    const userRequest: Message = {
-      role: "user",
-      type: "text",
-      content: messageContent
-    };
+    try {
+      const llmResponse = await getFarmAdvice({
+        last_message: messageContent,
+        context_history: [], // First message has no history
+        county: formData.county,
+        crop: formData.crop || "General Forestry",
+      });
 
-    // Simulate API call
-    setTimeout(() => {
-      setMessages(prev => [...prev, userRequest]);
-
-      setMessages(prev => [...prev, { role: "model", type: "llm_response", content: MOCK_ADVICE }]);
+      setMessages([
+        { role: "user", type: "text", content: messageContent },
+        { role: "model", type: "llm_response", content: llmResponse }
+      ]);
+    } catch (err: any) {
+      setError(err.message || "Agricultural advisor unreachable.");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   const handleFollowUpSubmit = async (e: React.FormEvent) => {
@@ -93,20 +98,22 @@ export default function Home() {
     if (!followUpMessage.trim()) return;
     setLoading(true);
 
-    const userRequest: Message = {
-      role: "user",
-      type: "text",
-      content: followUpMessage
-    };
+    try {
+      const llmResponse = await getFarmAdvice({
+        last_message: followUpMessage,
+        context_history: messages, // Pass the existing chat history!
+        county: formData.county,
+        crop: formData.crop || "General Forestry",
+      });
+      setMessages(prev => [...prev, { role: "user", type: "text", content: followUpMessage }]);
+      setFollowUpMessage("");
 
-    setMessages(prev => [...prev, userRequest]);
-    setFollowUpMessage("");
-
-    // Simulate API response for follow-up
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: "model", type: "llm_response", content: MOCK_FOLLOW_UP_RESPONSE }]);
+      setMessages(prev => [...prev, { role: "model", type: "llm_response", content: llmResponse }]);
+    } catch (err: any) {
+      setError("Connection lost. Please try again.");
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const loadHistoryChat = (chatId: string) => {
