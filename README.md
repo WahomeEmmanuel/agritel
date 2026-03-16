@@ -58,7 +58,6 @@ Create a `.env` file in the `backend/` folder:
 
 ```env
 GEMINI_API_KEY=your_api_key_here
-PORT=8000
 ```
 
 Start the server:

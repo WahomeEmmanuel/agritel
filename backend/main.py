@@ -16,7 +16,7 @@ app = FastAPI(title="Agritel.AI API")
 # Setup CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "https://agritel.emmanuelgathage.dev"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
